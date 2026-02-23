@@ -89,13 +89,32 @@ ssh -T git@github.com
    ```
 4. 能通过 HTTPS 访问 GitHub，但 SSH 连接 22 端口超时，这是非常常见的网络限制问题（比如运营商 / 防火墙屏蔽了 22 端口），并非你配置错误，我会教你两种解决方案。
    查看当前远程地址（确认是 SSH 地址）
+
+```bash
 git remote -v
 
-# 修改为 HTTPS 地址（替换 用户名/仓库名）
-git remote set-url origin https://github.com/你的用户名/你的仓库名.git
+git remote add origin https://github.com/LiStone30/ubuntu_config.git
+git branch -M main
+git push -u origin main
 
-# 验证修改结果
-git remote -v
+# 重新执行推送（会再次提示输入用户名和密码）
+git push -u origin main
+```
+- `Username for 'https://github.com'`: 输入你的 GitHub 用户名（LiStone30）；
+- `Password for 'https://LiStone30@github.com'`: 输入刚才生成的 **PAT 令牌**（不是账号密码）。
+
+步骤 3：配置凭证缓存（避免每次推送都输入 PAT）
+为了后续不用重复输入 PAT，配置 Git 凭证缓存：
+```bash
+# 安装凭证缓存依赖
+sudo apt update && sudo apt install -y libsecret-1-0 libsecret-1-dev
+
+# 配置永久缓存 PAT
+git config --global credential.helper /usr/share/doc/git/contrib/credential/libsecret/git-credential-libsecret
+```
+配置后，后续推送/拉取代码都无需再输入 PAT。
+
+
 
 
 ### 总结
