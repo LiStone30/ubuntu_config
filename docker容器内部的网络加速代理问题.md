@@ -6,11 +6,20 @@
 ```bash
 # 核心命令模板（替换成你的代理地址）
 sudo docker run -it --rm \
+  -e http_proxy=http://172.17.0.1:7897 \
+  -e https_proxy=http://172.17.0.1:7897 \
+  -e no_proxy=localhost,127.0.0.1,192.168.0.0/16 \
+  pytorch/pytorch:2.0.1-cuda11.7-cudnn8-runtime /bin/bash
+
+
+sudo docker run -it --rm \
   -e http_proxy=http://127.0.0.1:7897 \
   -e https_proxy=http://127.0.0.1:7897 \
   -e no_proxy=localhost,127.0.0.1,192.168.0.0/16 \
   --network host \  # 关键！让容器能访问宿主机的代理端口（WSL2/本地代理必加）
   你的镜像名称 /bin/bash
+
+
 
 # 示例：运行Ubuntu容器并配置代理
 sudo docker run -it --rm \
@@ -18,13 +27,15 @@ sudo docker run -it --rm \
   -e https_proxy=http://127.0.0.1:7897 \
   -e no_proxy=localhost,127.0.0.1 \
   --network host \
-  ubuntu:24.04 /bin/bash
+  pytorch/pytorch:2.0.1-cuda11.7-cudnn8-runtime /bin/bash
 ```
 
 进入容器后，测试代理是否生效：
 ```bash
 # 容器内执行，能快速返回结果说明代理生效
 curl -I https://github.com
+curl google.com
+curl https://ipinfo.io/ip
 ```
 
 有一点 apt 命令 如何使得加速代理起效
